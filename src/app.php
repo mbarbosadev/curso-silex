@@ -27,6 +27,8 @@ $app->get('/', function() {
 });
 
 $app->get('/home', function() use($app) {
+	//Função de debu do symfony/var-dumper
+	//dump($app);
 	return $app['view.renderer']->render('home');
 });
 
