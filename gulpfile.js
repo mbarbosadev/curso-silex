@@ -1,6 +1,7 @@
 const gulp = require('gulp');
 const brouserSync = require('browser-sync').create();
 const less = require('gulp-less');
+const del = require('del');
 
 let DIR = {
 	less: './assets/less',
@@ -22,6 +23,10 @@ gulp.task('browser-sync', function() {
 	});
 });
 
+gulp.task('clean', function() {
+	del.sync([DIR.build]);
+});
+
 gulp.task('less', function() {
 	gulp.src(`${DIR.less}/style.less`)
 		.pipe(less())
@@ -39,4 +44,4 @@ gulp.task('watch', function() {
 	gulp.watch([`${DIR.less}/**/*.less`], ['less']);
 });
 
-gulp.task('dev', ['watch', 'scripts', 'less', 'browser-sync']);
+gulp.task('dev', ['clean', 'watch', 'scripts', 'less', 'browser-sync']);
