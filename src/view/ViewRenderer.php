@@ -13,16 +13,29 @@ class ViewRenderer {
 	
 	public function render($name, array $data = []) {
 
+		$content = $this->getOutput($name, $data);
+		
+		$layout = __DIR__ . '/../../templates/layouts/layout.phtml';
+		
+		return $this->getOutput($layout, ['content' => $content]);
+	}
+	
+	protected function getOutput($name, array $data = []) {
 		$this->templateName = $name;
 		
 		extract($data);
 		
 		ob_start();
-		include $this->pathTemplates."/{$this->templateName}.phtml";
-		$saida = ob_get_clean();
 		
-		return $saida;
+		if(!file_exists($this->templateName)) {
+			include $this->pathTemplates."/{$this->templateName}.phtml";
+		} else {
+			include $this->templateName;
+		}
 		
+		$output = ob_get_clean();
+
+		return $output;
 	}
 	
 }
