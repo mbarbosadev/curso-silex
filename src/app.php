@@ -9,6 +9,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 $app = new Silex\Application();
 
+$app['debug'] = true;
 
 $app['view.config'] = [
 	'path_templates' => __DIR__ . '/../templates'
