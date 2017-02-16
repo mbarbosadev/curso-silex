@@ -80,6 +80,21 @@ $app->post('/posts/create', function(Request $request) use($app) {
 	
 });
 
+$app->get('/posts', function(Request $request) use($app) {
+
+	/** @var Doctrine\DBAL\Connection $db */
+	$db = $app['db'];
+	$sql = "SELECT * FROM posts;";
+	$posts = $db->fetchAll($sql);
+
+	return $app['view.renderer']->render('posts/list', [
+		'posts'=>$posts
+	]);
+
+});
+	
+
+
 $app->post('/get-name/{param1}', function(Request $request, $param1) use ($app) {
 	
 	$name = $request->get('name', 'Não informado');
