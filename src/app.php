@@ -5,6 +5,7 @@ use Symfony\Component\HttpFoundation\Response;
 use SON\view\ViewRenderer;
 use Silex\Application;
 
+
 require __DIR__ . '/../vendor/autoload.php';
 
 
@@ -58,6 +59,26 @@ $app->get('/create-table', function(Application $app) {
 	return "Tabelas criadas";
 });
 	
+$app->get('/posts/create', function() use ($app) {
+	return $app['view.renderer']->render('posts/create');
+});
+
+
+$app->post('/posts/create', function(Request $request) use($app) {
+	
+	/** @var Doctrine\DBAL\Connection $db */
+	$db = $app['db'];
+	$data = $request->request->all();
+
+	
+	$db->insert('posts', [
+		'title'=>$data['title'],
+		'content'=>$data['content'],
+	]);
+	
+	return $app->redirect('/posts/create');
+	
+});
 
 $app->post('/get-name/{param1}', function(Request $request, $param1) use ($app) {
 	
