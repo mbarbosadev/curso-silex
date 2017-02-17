@@ -76,7 +76,7 @@ $app->post('/posts/create', function(Request $request) use($app) {
 		'content'=>$data['content'],
 	]);
 	
-	return $app->redirect('/posts/create');
+	return $app->redirect('/posts');
 	
 });
 
@@ -90,6 +90,33 @@ $app->get('/posts', function(Request $request) use($app) {
 	return $app['view.renderer']->render('posts/list', [
 		'posts'=>$posts
 	]);
+
+});
+	
+
+$app->get('/posts/edit/{id}', function($id) use($app) {
+	
+	/** @var Doctrine\DBAL\Connection $db */
+	$db = $app['db'];
+	$sql = "SELECT * FROM posts WHERE id = ?;";
+	
+	$post = $db->fetchAssoc($sql, [$id]);
+	
+	return $app['view.renderer']->render('posts/edit', ['post' => $post]);
+});
+
+$app->post('/posts/edit/{id}', function(Request $request, $id) use($app) {
+
+	/** @var Doctrine\DBAL\Connection $db */
+	$db = $app['db'];
+	$data = $request->request->all();
+
+	$db->update('posts', [
+		'title'=>$data['title'],
+		'content'=>$data['content'],
+	], ['id' => $id]);
+
+	return $app->redirect('/posts');
 
 });
 	
