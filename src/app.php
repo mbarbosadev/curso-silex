@@ -121,6 +121,18 @@ $app->post('/posts/edit/{id}', function(Request $request, $id) use($app) {
 });
 	
 
+$app->get('/posts/delete/{id}', function($id) use($app) {
+
+	/** @var Doctrine\DBAL\Connection $db */
+	$db = $app['db'];
+
+	$db->delete('posts', ['id'=>$id]);
+
+	return $app->redirect('/posts');
+
+});
+
+
 
 $app->post('/get-name/{param1}', function(Request $request, $param1) use ($app) {
 	
