@@ -102,6 +102,10 @@ $app->get('/posts/edit/{id}', function($id) use($app) {
 	
 	$post = $db->fetchAssoc($sql, [$id]);
 	
+	if(!$post) {
+		$app->abort(404, 'Post não encontrado!');
+	}
+	
 	return $app['view.renderer']->render('posts/edit', ['post' => $post]);
 });
 
@@ -109,8 +113,18 @@ $app->post('/posts/edit/{id}', function(Request $request, $id) use($app) {
 
 	/** @var Doctrine\DBAL\Connection $db */
 	$db = $app['db'];
-	$data = $request->request->all();
 
+	$sql = "SELECT * FROM posts WHERE id = ?;";
+	
+	$post = $db->fetchAssoc($sql, [$id]);
+	
+	if(!$post) {
+		$app->abort(404, 'Post não encontrado!');
+	}
+	
+	
+	$data = $request->request->all();
+	
 	$db->update('posts', [
 		'title'=>$data['title'],
 		'content'=>$data['content'],
@@ -126,12 +140,33 @@ $app->get('/posts/delete/{id}', function($id) use($app) {
 	/** @var Doctrine\DBAL\Connection $db */
 	$db = $app['db'];
 
+	$sql = "SELECT * FROM posts WHERE id = ?;";
+	
+	$post = $db->fetchAssoc($sql, [$id]);
+	
+	if(!$post) {
+		$app->abort(404, 'Post não encontrado!');
+	}
+	
+	
 	$db->delete('posts', ['id'=>$id]);
 
 	return $app->redirect('/posts');
 
 });
 
+
+$app->error(function(\Exception $e, Request $request, $code) use($app) {
+	
+	switch ($code) {
+		case 404:
+			return $app['view.renderer']->render('errors/404', [
+				'message'=>$e->getMessage()
+			]);
+			break;
+	}
+	
+});
 
 
 $app->post('/get-name/{param1}', function(Request $request, $param1) use ($app) {
