@@ -32,6 +32,7 @@ $app['view.renderer'] = function() use ($app) {
 };
 
 
+
 $app->get('/create-table', function(Application $app) {
 	
 	$file = fopen(__DIR__. '/../data/schema.sql', 'r');
@@ -45,10 +46,16 @@ $app->get('/create-table', function(Application $app) {
 	return "Tabelas criadas";
 });
 
+$site = include __DIR__ . '/controllers/site.php';
 
-$post = include __DIR__ . '/controllers/posts.php';
-$app->mount('/posts', $post);
+$app->mount('/', $site);
+
+$app->mount('/admin', function($admin) use($app) {
+
+	$post = include __DIR__ . '/controllers/posts.php';
 	
+	$admin->mount('/posts', $post);
+});
 
 $app->error(function(\Exception $e, Request $request, $code) use($app) {
 	

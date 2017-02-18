@@ -21,7 +21,7 @@ $post->post('/create', function(Request $request) use($app) {
 		'content'=>$data['content'],
 	]);
 	
-	return $app->redirect('/posts');
+	return $app->redirect('/admin/posts');
 	
 });
 
@@ -47,15 +47,17 @@ $post->get('/edit/{id}', function($id) use($app) {
 	
 	$post = $db->fetchAssoc($sql, [$id]);
 	
+	
 	if(!$post) {
 		$app->abort(404, 'Post não encontrado!');
 	}
-	
-	return $app['view.renderer']->render('posts/edit', ['post' => $post]);
+
+	return $app['view.renderer']->render('/posts/edit', ['post' => $post]);
 });
 
-$post->post('/edit/{id}', function(Request $request, $id) use($app) {
 
+$post->post('/edit/{id}', function(Request $request, $id) use($app) {
+	
 	/** @var Doctrine\DBAL\Connection $db */
 	$db = $app['db'];
 
@@ -75,7 +77,7 @@ $post->post('/edit/{id}', function(Request $request, $id) use($app) {
 		'content'=>$data['content'],
 	], ['id' => $id]);
 
-	return $app->redirect('/posts');
+	return $app->redirect('/admin/posts');
 
 });
 	
@@ -96,7 +98,7 @@ $post->get('/delete/{id}', function($id) use($app) {
 	
 	$db->delete('posts', ['id'=>$id]);
 
-	return $app->redirect('/posts');
+	return $app->redirect('/admin/posts');
 
 });
 
