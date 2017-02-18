@@ -32,7 +32,7 @@ $post->get('/', function(Request $request) use($app) {
 	$sql = "SELECT * FROM posts;";
 	$posts = $db->fetchAll($sql);
 
-	return $app['view.renderer']->render('posts/list', [
+	return $app['twig']->render('posts/list.html.twig', [
 		'posts'=>$posts
 	]);
 
