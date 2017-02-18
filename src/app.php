@@ -15,6 +15,10 @@ $app['view.config'] = [
 	'path_templates' => __DIR__ . '/../templates'
 ];
 
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
+	'twig.path' => __DIR__.'/../templates'
+));
+
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
 	'db.options' => array(
 		'driver' => 'pdo_mysql',

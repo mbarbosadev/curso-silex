@@ -5,7 +5,7 @@ $post = $app['controllers_factory'];
 	
 
 $post->get('/create', function() use ($app) {
-	return $app['view.renderer']->render('posts/create');
+	return $app['twig']->render('posts/create.html.twig');
 });
 
 
