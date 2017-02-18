@@ -52,7 +52,7 @@ $post->get('/edit/{id}', function($id) use($app) {
 		$app->abort(404, 'Post não encontrado!');
 	}
 
-	return $app['view.renderer']->render('/posts/edit', ['post' => $post]);
+	return $app['twig']->render('posts/edit.html.twig', ['post' => $post]);
 });
 
 

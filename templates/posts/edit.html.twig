@@ -1,20 +1,23 @@
+{% extends 'layouts/layout.html.twig' %}
+
+{% block content %}
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h1>Editar post</h1>
-            <form name="form" method="post" action="<?php echo "/admin/posts/edit/{$post['id']}"; ?>">
+            <form name="form" method="post" action="/admin/posts/edit/{{ post.id }}">
                 <div class="form-group">
                     <label for="title">
                         Título
                     </label>
                     <input class="form-control" id="title" type="text" name="title"
-                            value="<?php echo $post['title'];?>"/>
+                            value="{{ post.title }}"/>
                 </div>
                 <div class="form-group">
                     <label for="content">
                         Conteúdo
                     </label>
-                    <textarea class="form-control" id="content" name="content"><?php echo $post['content'];?></textarea>
+                    <textarea class="form-control" id="content" name="content">{{ post.content }}</textarea>
                 </div>
                 <button type="submit" class="btn btn-default">
                     Salvar
@@ -23,3 +26,4 @@
         </div>
     </div>
 </div>
+{% endblock %}
