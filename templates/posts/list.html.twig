@@ -1,47 +1,74 @@
 {% extends 'layouts/layout.html.twig' %}
 
+
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h1>Meus posts</h1>
-            <a class="btn btn-primary" href="/admin/posts/create">Criar post</a>
-            <table class="table">
-                <thead>
+
+<div id="confirmacao" class="modal fade" tabindex="-1" role="dialog">
+
+    <form>
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Confirmação de exclusão!</h4>
+          </div>
+          <div class="modal-body">
+            <p>Tem certeza que deseja remover?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
+            <button type="submit" class="btn btn-primary">Sim</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </form>
+
+</div><!-- /.modal -->
+
+<div class="row">
+    <div class="col-md-12">
+        <h1>Meus posts</h1>
+        
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            	
+            	{% for post in posts %}
                 <tr>
-                    <th>ID</th>
-                    <th>Título</th>
-                    <th>Ações</th>
+                    <td>{{ post.id }}</td>
+                    <td>{{ post.title }}</td>
+                    <td>
+                        <a class="btn btn-warning" href="/admin/posts/edit/{{ post.id }}">
+                            Editar
+                        </a>
+                        <!--
+                        <a href="/admin/posts/delete/{{ post.id }}">
+                            Excluir
+                        </a>
+                        -->
+                        <button class="btn btn-danger" data-url="/admin/posts/delete/{{ post.id }}"" data-title="{{ post.title }}" data-codigo="{{ post.id }}" data-toggle="modal" data-target="#confirmacao">
+                            Excluir
+                        </button>
+                        
+                        
+                        
+                    </td>
                 </tr>
-                </thead>
-                <tbody>
-                	
-                	{% for post in posts %}
-                    <tr>
-                        <td>{{ post.id }}</td>
-                        <td>{{ post.title }}</td>
-                        <td>
-                            <a  href="/admin/posts/edit/{{ post.id }}">
-                                Editar
-                            </a>|
-                            <!--
-                            <a href="/admin/posts/delete/{{ post.id }}">
-                                Excluir
-                            </a>
-                            -->
-                            <a data-toggle="modal" data-target="#confirmacao" href="#">
-                                Excluir
-                            </a>
-                            
-                            
-                            
-                        </td>
-                    </tr>
-                	{% endfor %}
-                
-                </tbody>
-            </table>
-        </div>
+            	{% endfor %}
+            
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}
+
+{% block js %}
+	<script type="text/javascript" src="/build/js/confirmacao-modal.js"></script>
+{% endblock %}
+

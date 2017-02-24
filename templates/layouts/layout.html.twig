@@ -10,51 +10,6 @@
 
 <body>
 
-
-<div id="confirmacao" class="modal fade" tabindex="-1" role="dialog">
-
-    <form>
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Confirmação de exclusão!</h4>
-          </div>
-          <div class="modal-body">
-            <p>Tem certeza que deseja remover?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Não</button>
-            <button type="button" class="btn btn-primary">Sim</button>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </form>
-
-</div><!-- /.modal -->
-
-
-
-
-
-
-
-
-
-
-<!--
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#confirmacao">
-  Launch demo modal
-</button>
--->
-
-
-
-<!--
-<a href="#" data-toggle="modal" data-target="#confirmacao">Launch demo modal</a>
--->
-
-
 <nav class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">
@@ -79,17 +34,28 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/home">Home</a></li>
                 <li><a href="/fale-conosco">Fale conosco</a></li>
-                <li><a href="/admin/posts">Post</a></li>
+                <li><a href="/admin/posts">Posts</a></li>
+                <li><a href="/admin/posts/create">Criar post</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
-{% block content %}
-{% endblock %}
+
+<div class="container">
+
+{% for message in app.session.flashbag.get('message') %}
+    <div class="alert alert-success" role="alert">{{ message }}</div>
+{% endfor %}
+
+
+{% block content %}{% endblock %}
+</div>
 
 <script type="text/javascript" src="/build/js/jquery.min.js"></script>
 <script type="text/javascript" src="/build/js/bootstrap.min.js"></script>
+
+{% block js %}{% endblock %}
 
 </body>
 

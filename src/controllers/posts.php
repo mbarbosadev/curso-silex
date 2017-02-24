@@ -82,6 +82,7 @@ $post->post('/edit/{id}', function(Request $request, $id) use($app) {
 });
 	
 
+
 $post->get('/delete/{id}', function($id) use($app) {
 
 	/** @var Doctrine\DBAL\Connection $db */
@@ -98,6 +99,10 @@ $post->get('/delete/{id}', function($id) use($app) {
 	
 	$db->delete('posts', ['id'=>$id]);
 
+	
+	$app['session']->getFlashBag()->add('message', 'Post excluído com sucesso');
+	
+	
 	return $app->redirect('/admin/posts');
 
 });

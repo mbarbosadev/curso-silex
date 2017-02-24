@@ -11,6 +11,10 @@ $app = new Silex\Application();
 
 $app['debug'] = true;
 
+
+$app->register(new Silex\Provider\SessionServiceProvider());
+
+
 $app['view.config'] = [
 	'path_templates' => __DIR__ . '/../templates'
 ];
