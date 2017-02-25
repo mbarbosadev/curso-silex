@@ -1,11 +1,18 @@
 <?php
 use Symfony\Component\HttpFoundation\Request;
+// use Symfony\Component\Validator\Constraints\EmailValidator as Assert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 $post = $app['controllers_factory'];
 	
 
 $post->get('/create', function() use ($app) {
-	return $app['twig']->render('posts/create.html.twig');
+	return $app['twig']->render('posts/create.html.twig', [
+		'post'=>[
+			'title'=>'',
+			'content'=>''
+		]
+	]);
 });
 
 
@@ -15,13 +22,56 @@ $post->post('/create', function(Request $request) use($app) {
 	$db = $app['db'];
 	$data = $request->request->all();
 
+	$post = array(
+		'title'=>$data['title'],
+		'content'=>$data['content']
+	);
+	
+	
+	$constraints = new Assert\Collection(array(
+		'title'=>new Assert\NotBlank(),
+		'content'=>new Assert\NotBlank()
+	));
+	
+	
+	$errors = $app['validator']->validate($post, $constraints);
+	
+	
+	if(count($errors) > 0) {
+		
+		$camposErrors = [];
+		
+		foreach ($errors as $err) {
+
+			$nomeCampo = $err->getPropertyPath();
+			
+			$nomeCampo = str_replace('[', '', $nomeCampo);
+			$nomeCampo = str_replace(']', '', $nomeCampo);
+			
+			$camposErrors[] = $nomeCampo;
+			
+		}
+		
+		return $app['twig']->render('posts/create.html.twig', [
+			'errors'=>$errors,
+			'post'=>[
+				'title'=>$data['title'],
+				'content'=>$data['content']
+			],
+			'camposErrors'=>$camposErrors
+		]);
+		
+	}
 	
 	$db->insert('posts', [
 		'title'=>$data['title'],
 		'content'=>$data['content'],
 	]);
 	
+	$app['session']->getFlashBag()->add('message', 'Post cadastrado com sucesso!');
+	
 	return $app->redirect('/admin/posts');
+	
 	
 });
 
@@ -100,7 +150,7 @@ $post->get('/delete/{id}', function($id) use($app) {
 	$db->delete('posts', ['id'=>$id]);
 
 	
-	$app['session']->getFlashBag()->add('message', 'Post excluído com sucesso');
+	$app['session']->getFlashBag()->add('message', 'Post excluído com sucesso!');
 	
 	
 	return $app->redirect('/admin/posts');

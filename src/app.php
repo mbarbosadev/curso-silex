@@ -14,6 +14,8 @@ $app['debug'] = true;
 
 $app->register(new Silex\Provider\SessionServiceProvider());
 
+$app->register(new Silex\Provider\ValidatorServiceProvider());
+
 
 $app['view.config'] = [
 	'path_templates' => __DIR__ . '/../templates'

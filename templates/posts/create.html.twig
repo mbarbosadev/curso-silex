@@ -1,21 +1,26 @@
 {% extends 'layouts/layout.html.twig' %}
 
 {% block content %}
+
+{% if errors is defined %}
+	<div class="alert alert-danger" role="alert">
+	{% for error in errors %}
+    	<p>{{ error.propertyPath }} - {{ error.message }}</p>
+	{% endfor %}
+	</div>
+{% endif %}
+
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h1>Cadastrar post</h1>
             <form name="form" method="post" action="/admin/posts/create">
-                <div class="form-group">
-                    <label for="title">
-                        Título
-                    </label>
-                    <input class="form-control" id="title" type="text" name="title" />
+                <div class="form-group {{ (camposErrors is defined and 'title' in camposErrors) ? 'has-error' }}">
+                    <label class="control-label" for="title">Título</label>
+                    <input class="form-control" id="title" type="text" name="title" value="{{ post.title }}" />
                 </div>
-                <div class="form-group">
-                    <label for="content">
-                        Conteúdo
-                    </label>
+                <div class="form-group {{ (camposErrors is defined and 'content' in camposErrors) ? 'has-error' }}">
+                    <label class="control-label" for="content">Conteúdo</label>
                     <textarea class="form-control" id="content" name="content"></textarea>
                 </div>
                 <button type="submit" class="btn btn-default">
