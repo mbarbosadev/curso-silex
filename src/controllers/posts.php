@@ -1,6 +1,5 @@
 <?php
 use Symfony\Component\HttpFoundation\Request;
-// use Symfony\Component\Validator\Constraints\EmailValidator as Assert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 $post = $app['controllers_factory'];
@@ -16,40 +15,34 @@ $post->get('/create', function() use ($app) {
 });
 
 
-$post->post('/create', function(Request $request) use($app) {
+$constraintsPost = new Assert\Collection(array(
+	'title'=>new Assert\NotBlank([
+			'message'=>'Campo título é obrigatório.',
+			'payload'=>['field'=>'title']
+
+	]),
+	'content'=>new Assert\NotBlank([
+			'message'=>'Campo conteúdo é obrigatório',
+			'payload'=>['field'=>'content']
+	])
+));
+	
+
+
+$post->post('/create', function(Request $request) use($app, $constraintsPost) {
 	
 	/** @var Doctrine\DBAL\Connection $db */
 	$db = $app['db'];
 	$data = $request->request->all();
-
-	$post = array(
-		'title'=>$data['title'],
-		'content'=>$data['content']
-	);
 	
 	
-	$constraints = new Assert\Collection(array(
-		'title'=>new Assert\NotBlank(),
-		'content'=>new Assert\NotBlank()
-	));
-	
-	
-	$errors = $app['validator']->validate($post, $constraints);
-	
+	$errors = $app['validator']->validate($data, $constraintsPost);
 	
 	if(count($errors) > 0) {
-		
-		$camposErrors = [];
+		$fieldsError = [];
 		
 		foreach ($errors as $err) {
-
-			$nomeCampo = $err->getPropertyPath();
-			
-			$nomeCampo = str_replace('[', '', $nomeCampo);
-			$nomeCampo = str_replace(']', '', $nomeCampo);
-			
-			$camposErrors[] = $nomeCampo;
-			
+			$fieldsError[] = $err->getConstraint()->payload['field'];
 		}
 		
 		return $app['twig']->render('posts/create.html.twig', [
@@ -58,7 +51,7 @@ $post->post('/create', function(Request $request) use($app) {
 				'title'=>$data['title'],
 				'content'=>$data['content']
 			],
-			'camposErrors'=>$camposErrors
+			'fieldsError'=>$fieldsError
 		]);
 		
 	}
@@ -106,7 +99,7 @@ $post->get('/edit/{id}', function($id) use($app) {
 });
 
 
-$post->post('/edit/{id}', function(Request $request, $id) use($app) {
+$post->post('/edit/{id}', function(Request $request, $id) use($app, $constraintsPost) {
 	
 	/** @var Doctrine\DBAL\Connection $db */
 	$db = $app['db'];
@@ -122,11 +115,36 @@ $post->post('/edit/{id}', function(Request $request, $id) use($app) {
 	
 	$data = $request->request->all();
 	
+	
+	
+	$errors = $app['validator']->validate($data, $constraintsPost);
+	
+	if(count($errors) > 0) {
+		$fieldsError = [];
+	
+		foreach ($errors as $err) {
+			$fieldsError[] = $err->getConstraint()->payload['field'];
+		}
+	
+		return $app['twig']->render('posts/create.html.twig', [
+				'errors'=>$errors,
+				'post'=>[
+						'title'=>$data['title'],
+						'content'=>$data['content']
+				],
+				'fieldsError'=>$fieldsError
+		]);
+	
+	}
+	
+	
 	$db->update('posts', [
 		'title'=>$data['title'],
 		'content'=>$data['content'],
 	], ['id' => $id]);
 
+	$app['session']->getFlashBag()->add('message', 'Post atualizado com sucesso!');
+	
 	return $app->redirect('/admin/posts');
 
 });

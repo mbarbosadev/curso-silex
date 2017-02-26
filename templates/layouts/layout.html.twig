@@ -39,10 +39,35 @@
 
 <div class="container">
 
-{% for message in app.session.flashbag.get('message') %}
-    <div class="alert alert-success" role="alert">{{ message }}</div>
-{% endfor %}
+{% if errors is defined %}
+	
+    <div class="alert alert-danger" role="alert">
+    
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    
+    	{% for error in errors %}
+        	<p>
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                {{ error.message }}
+        	</p>
+    	{% endfor %}
+    
+    
+    </div>
+	
+	
+{% endif %}
 
+{% for message in app.session.flashbag.get('message') %}
+    <div class="alert alert-success" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    {{ message }}
+    </div>
+{% endfor %}
 
 {% block content %}{% endblock %}
 </div>
